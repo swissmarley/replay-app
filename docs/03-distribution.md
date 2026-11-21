@@ -162,8 +162,9 @@ xcodebuild -exportArchive -archivePath build/Replay.xcarchive \
 
 `ExportOptions.plist` uses `method` `app-store-connect`, `destination`
 `upload`, `signingStyle` `automatic`, `manageAppVersionAndBuildNumber` `true`
-(Xcode bumps the build number) and `testFlightInternalTestingOnly` `true`
-(the build can't go to external testers or App Review, see below).
+(Xcode bumps the build number). Add `testFlightInternalTestingOnly` `true`
+if the build should stay internal-only; such a build can't be attached to an
+App Store version or sent to external testers (see below).
 
 ### What about the App Store?
 
