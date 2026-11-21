@@ -143,6 +143,28 @@ For more people, use **TestFlight internal testing**:
 `npx eas-cli@latest build -p ios --profile production && npx eas-cli@latest submit -p ios`.
 Then add testers in App Store Connect. Internal testing needs no App Review.
 
+### TestFlight from a Mac with Xcode (how build 1.0.0 was shipped)
+
+`app.json` sets `ios.appleTeamId`, so the generated project is already signed
+for the team. The App Store Connect app (bundle ID `com.swissmarley.replay`)
+must exist before uploading.
+
+```bash
+npm ci && npm run check
+npx expo prebuild -p ios
+cd ios && xcodebuild archive -workspace Replay.xcworkspace -scheme Replay \
+  -configuration Release -destination 'generic/platform=iOS' \
+  -archivePath build/Replay.xcarchive -allowProvisioningUpdates
+xcodebuild -exportArchive -archivePath build/Replay.xcarchive \
+  -exportPath build/upload -exportOptionsPlist ExportOptions.plist \
+  -allowProvisioningUpdates
+```
+
+`ExportOptions.plist` uses `method` `app-store-connect`, `destination`
+`upload`, `signingStyle` `automatic`, `manageAppVersionAndBuildNumber` `true`
+(Xcode bumps the build number) and `testFlightInternalTestingOnly` `true`
+(the build can't go to external testers or App Review, see below).
+
 ### What about the App Store?
 
 Not realistic for this app. Apple's guideline 5.2.3 disallows apps that play or
